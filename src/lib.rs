@@ -4,6 +4,8 @@ mod vdf;
 mod platform_windows;
 #[cfg(target_os = "macos")]
 mod platform_darwin;
+#[cfg(target_os = "linux")]
+mod platform_linux;
 
 /// Platform-specific functions exposed for TUI use.
 pub mod platform {
@@ -11,6 +13,8 @@ pub mod platform {
     pub use crate::platform_windows::disk_space;
     #[cfg(target_os = "macos")]
     pub use crate::platform_darwin::disk_space;
+    #[cfg(target_os = "linux")]
+    pub use crate::platform_linux::disk_space;
 }
 
 use std::collections::{HashMap, HashSet};
@@ -26,6 +30,8 @@ pub use vdf::{VdfError, VdfObject};
 use platform_windows::{file_allocated_size, launch_app_id_platform, steam_root};
 #[cfg(target_os = "macos")]
 use platform_darwin::{file_allocated_size, launch_app_id_platform, steam_root};
+#[cfg(target_os = "linux")]
+use platform_linux::{file_allocated_size, launch_app_id_platform, steam_root};
 
 #[derive(Debug)]
 pub enum SteamTrainError {
@@ -347,6 +353,16 @@ impl App {
     #[cfg(target_os = "macos")]
     pub fn open_install_path(&self) -> Result<()> {
         platform_darwin::open_install_path(&self.game_path)
+    }
+
+    #[cfg(target_os = "linux")]
+    pub fn uninstall_via_steam(&self) -> Result<()> {
+        platform_linux::uninstall_via_steam(&self.app_id)
+    }
+
+    #[cfg(target_os = "linux")]
+    pub fn open_install_path(&self) -> Result<()> {
+        platform_linux::open_install_path(&self.game_path)
     }
 }
 

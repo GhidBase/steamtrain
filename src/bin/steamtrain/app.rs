@@ -181,17 +181,9 @@ impl App {
             return;
         }
         let lib_path = &self.libraries[self.cur_lib_idx].path;
-        #[cfg(windows)]
-        {
-            if let Ok((total, free)) = steamtrain::platform::disk_space(lib_path) {
-                self.lib_total = total;
-                self.lib_free = free;
-            }
-        }
-        #[cfg(not(windows))]
-        {
-            // TODO: implement for other platforms
-            let _ = lib_path;
+        if let Ok((total, free)) = steamtrain::platform::disk_space(lib_path) {
+            self.lib_total = total;
+            self.lib_free = free;
         }
     }
 
